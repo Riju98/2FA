@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .otp-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .otp-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .otp-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .otp-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .otp-container button:hover {
+            background-color: #218838;
+        }
+
+        .otp-container .error {
+            color: red;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <h2>Enter OTP</h2>
+    <form id="otpForm">
+        <input type="text" id="otp" name="otp" placeholder="Enter your OTP" required>
+        <div class="error" id="error"></div>
+        <button type="submit">Verify OTP</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('otpForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const otp = document.getElementById('otp').value;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                otp: otp,
+                // Add email, password, or other required fields
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Login successful') {
+                window.location.href = '/dashboard';
+            } else {
+                document.getElementById('error').innerText = data.message || 'Invalid OTP. Please try again.';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error').innerText = 'An error occurred. Please try again.';
+        });
+    });
+</script>
+
+</body>
+</html>
